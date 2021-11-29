@@ -22,4 +22,8 @@ def bench(func, iterations=1, *args):
         func(*args)
     totalTime += time.time() - start
 
+    # Output.
     output = f"Total time taken: {totalTime:.3f}s\n" + f"Average time: {totalTime/iterations:.3f}s\n"
+    print(output, end="")
+    
+    return totalTime
