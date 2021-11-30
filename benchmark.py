@@ -1,6 +1,6 @@
 import time
 
-def bench(func, iterations=1, *args):
+def bench(func, *args, iterations=1):
     """Time how long a function takes to execute.
     Prints out the total time and the average time of the execution.
 
@@ -27,7 +27,7 @@ def bench(func, iterations=1, *args):
     print(output, end="")
     return totalTime
 
-def compare(func1, func2, iterations=1, *args):
+def compare(func1, func2, *args, iterations=1):
     """Allows you to compare to similar functions
     Both functions will be given the same arguments so they mnust be similar
     in structure.
