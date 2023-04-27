@@ -1,56 +1,48 @@
-import time
+from time import process_time
+from sys import stdout
 
-def bench(func, *args, iterations=1):
+def bench(func, *args, iterations=1, output=False, log=stdout, **kwargs):
     """Time how long a function takes to execute.
-    Prints out the total time and the average time of the execution.
 
-    Returns: A float of the total time taken in seconds."""
+    The time calculated only accounts for the time spent on the CPU,
+    and not time spent sleeping.
+
+    Parameters:
+        func - the function to operate on
+        args - arguments for the function
+        interations - the number of times to run the function
+        output - whether to display time information after execution
+        log - writes the output to the log file if output is true
+        kwargs - key word arguments for the function
+
+    Returns:
+     - A float of the total time taken in seconds.
+    """
     # Type Check.
     if not isinstance(iterations, int):
-        raise TypeError(f"Expected int for iterations but got {type(iterations)}")
-    # Value Check. Cannot repeat less than 1 times.
+        raise TypeError(
+            f"Expected int for iterations but got {type(iterations)}")
+    # Value Check. Cannot repeat less than 1 times
     if iterations < 1:
-        raise ValueError("Positive integer needed for the number of times to call the function.")
+        raise ValueError(
+            "Positive integer needed for iterations (iterations >= 1)")
 
-    # Information to gather from the process.
-    totalTime = 0
-    averageTime = 0
-    start = time.time()
+    # Information to gather from the process
+    total_time = 0
+    average_time = 0
+    start = process_time()
 
-    # Call func n times.
+    # Call func n times
     for repeat in range(iterations):
-        func(*args)
-    totalTime = time.time() - start
+        func(*args, **kwargs)
+    total_time = process_time() - start
+    average_time = total_time / iterations
 
-    # Output.
-    output = f"Function: {func.__name__}:\nTotal time taken: {totalTime:.3f}s\n" + f"Average time: {totalTime/iterations:.3f}s\n"
-    print(output, end="")
-    return totalTime
-
-def compare(func1, func2, *args, iterations=1):
-    """Allows you to compare to similar functions
-    Both functions will be given the same arguments so they mnust be similar
-    in structure.
-
-    Runs each function based on the number of iterations given. Displays how much faster
-    a function was as a percentage.
-
-    Returns: A float of the total difference in time between the execution of the two
-    functions."""
-    # No need to type check or value check because it is done inside bench().
-    time_func1 = bench(func1, iterations, *args)
-    time_func2 = bench(func2, iterations, *args)
-
-    sep = "------------------------------\n"
-    
-    # Find out which function was faster.
-    if time_func1 < time_func2:
-        percentage = (time_func2 / time_func1) * 100
-        print(sep + f"{func1.__name__}: +{percentage:.2f}%\n", end = "")
-    elif time_func1 > time_func2:
-        percentage = (time_func1 / time_func2) * 100
-        print(sep + f"{func2.__name__}: +{percentage:.2f}%\n", end = "")
-    else: # Equal execution time.
-        print(f"{func1.__name__} == {func2.__name__}")
-    
-    
+    # Output
+    if output:
+        output = (f"Function: {func.__name__} \{\n"
+                  + f"\tTotal time taken: {totalTime:.3f}s\n"
+                  + f"\tAverage time taken: {average_time:.3f}s\n"
+                  + "}\n\n")
+        print(output, file=log)
+    return total_time
