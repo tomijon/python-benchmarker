@@ -40,7 +40,7 @@ def bench(func, *args, iterations=1, output=False, log=stdout, **kwargs):
 
     # Output
     if output:
-        output = (f"Function: {func.__name__} \{\n"
+        output = (f"Function: {func.__name__}" + "{\n"
                   + f"\tTotal time taken: {totalTime:.3f}s\n"
                   + f"\tAverage time taken: {average_time:.3f}s\n"
                   + "}\n\n")
